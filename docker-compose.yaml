@@ -1,0 +1,73 @@
+version: "3"
+services:
+  torch-base:
+    build: 
+      context: .
+      target: torch-base
+      args:
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+        - UID=${UID}
+        - GID=${GID}
+    image: torch-base:latest
+    container_name: torch-base
+  torch-python-base:
+    build: 
+      context: .
+      target: torch-python-base
+      args:
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+        - UID=${UID}
+        - GID=${GID}
+    image: torch-python-base:latest
+    container_name: torch-python-base
+  torch-poisson-solver:
+    build: 
+      context: .
+      target: torch-poisson-solver
+      args:
+        - USER_NAME=${USER_NAME}
+        - GROUP_NAME=${GROUP_NAME}
+        - UID=${UID}
+        - GID=${GID}
+    image: nsakairi/torch-poisson-solver
+    container_name: torch-poisson-solver
+    environment:
+      - ENDPOINT_URL=${ENDPOINT_URL}
+      - DISPLAY=${ENDPOINT_URL}:0
+#      - LIBGL_ALWAYS_INDIRECT=""
+    volumes:
+       - /tmp/.X11-unix:/tmp/.X11-unix
+       - $HOME/.Xauthority/:/root/.Xauthority
+       - ${WORKSPACE_DIR}:/home/${USER_NAME}/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    tty: true
+    # user: "${UID}:${GID}"
+#    ports:
+#      - "8000:8888"
+#      - "8001:8001"
+#   minio:
+#     image: minio/minio:latest
+#     container_name: minio
+#     environment:
+#       MINIO_ROOT_USER: sigma-chan
+#       MINIO_ROOT_PASSWORD: sigma-chan-dayo
+#     entrypoint: bash
+#     command: -c "/opt/bin/minio server /export --address :9999 --console-address :9001;
+#       mkdir -p /data/.minio.sys/buckets;
+#       cp -r /policies/* /data/.minio.sys/;
+#       /usr/bin/minio server /data"j
+#     volumes:
+#       - ./data:/export
+#       - ./minio/policies:/policies
+#       - ./minio/config:/root/.minio
+#     ports:
+#       - "9000:9999"
+#       - "9001:9001"
