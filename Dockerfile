@@ -33,7 +33,7 @@ USER ${USER_NAME}
 ENV POETRY_VERSION 1.3.1
 ENV POETRY_PATH ${HOME}
 ENV PATH $PATH:${HOME}/.poetry/bin:${HOME}/.local/bin:${HOME}/bin:$PATH
-WORKDIR ${HOME}/app
+WORKDIR ${HOME}/torch_poisson_solver
 RUN sudo chown -R ${USER_NAME} ${HOME}  && sudo chmod -R 777 ${HOME}
 
 RUN sudo apt update && \
@@ -57,17 +57,17 @@ ENV MINIO_ENDPOINT_URL ${MINIO_ENDPOINT_URL}
 FROM torch-python-base AS torch-poisson-solver
 
 ARG USER_NAME=${USER_NAME}
-ENV HOME=/home/${USER_NAME}
+ENV USER_NAME=${USER_NAME} HOME=/home/${USER_NAME}
 USER ${USER_NAME}
-WORKDIR ${HOME}/app
-COPY ./pyproject.toml ${HOME}/app 
-COPY ./poetry.lock ${HOME}/app
+WORKDIR ${HOME}
+COPY ./pyproject.toml ${HOME}
+COPY ./poetry.lock ${HOME}
 
 ### install python dependencies
 RUN poetry config virtualenvs.create false && \
     poetry config installer.parallel false && \
     poetry export -f requirements.txt --output requirements.txt --without-hashes && \
     pip3 install -r requirements.txt --user --no-deps
-
+WORKDIR ${HOME}/torch_poisson_solver
 CMD ["/bin/bash"]
 

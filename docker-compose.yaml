@@ -36,11 +36,13 @@ services:
     environment:
       - ENDPOINT_URL=${ENDPOINT_URL}
       - DISPLAY=${ENDPOINT_URL}:0
+      - USER_NAME=${USER_NAME}
+      - WORKSPACE_DIR=${WORKSPACE_DIR}
 #      - LIBGL_ALWAYS_INDIRECT=""
     volumes:
        - /tmp/.X11-unix:/tmp/.X11-unix
        - $HOME/.Xauthority/:/root/.Xauthority
-       - ${WORKSPACE_DIR}:/home/${USER_NAME}/app
+       - ${WORKSPACE_DIR}:/home/${USER_NAME}/torch_poisson_solver
     deploy:
       resources:
         reservations:
