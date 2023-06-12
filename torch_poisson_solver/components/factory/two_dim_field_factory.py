@@ -2,14 +2,14 @@
 
 from typing import Dict, List, Union, Any
 import torch
+import numpy as np
 
-from torch_poisson_solver.components.factory import TemplateFactory
+from torch_poisson_solver.components.factory import TemplateFactory, DeviceFactory
 
 class TwoDimFieldFactory(TemplateFactory):
     
     def __init__(self, length: int, type: str):
         self.length = length
-        self.type = type
         
 
     def create(self, *args: List[Any], **kwargs: Dict[str, Union[str, int]]) -> torch.Tensor:
@@ -23,5 +23,14 @@ class TwoDimFieldFactory(TemplateFactory):
         Returns:
             torch.Tensor: Field value as a tensor
         """
+        self.device = DeviceFactory().create()
         if kwargs["type"] == "unknown_variable":
-            return torch.randn(self.length, self.length)
+            return torch.randn(self.length, self.length).to(self.device)
+        elif kwargs["type"] == "laplacean":
+            return self.create_laplacean()
+
+    def create_laplacean(self):
+        diag = np.diag(np.full(self.length, 1))
+        array = -4.0 * diag + np.pad(diag, [(0, 1), (0, 0)], mode="constant") + np.pad(diag, [(0, 0), (0, 1)], mode="constant")
+        return torch.from_numpy(array).to(self.device)
+        

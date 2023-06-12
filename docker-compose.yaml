@@ -41,8 +41,9 @@ services:
 #      - LIBGL_ALWAYS_INDIRECT=""
     volumes:
        - /tmp/.X11-unix:/tmp/.X11-unix
-       - $HOME/.Xauthority/:/root/.Xauthority
-       - ${WORKSPACE_DIR}:/home/${USER_NAME}/torch_poisson_solver
+       - $HOME/.Xauthority/:/root/.Xauthority 
+       - ${WORKSPACE_DIR}/torch_poisson_solver:/home/${USER_NAME}/torch_poisson_solver
+       - ${WORKSPACE_DIR}/tests:/home/${USER_NAME}/torch_poisson_solver
     deploy:
       resources:
         reservations:

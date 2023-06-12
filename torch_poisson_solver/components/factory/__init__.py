@@ -2,3 +2,4 @@
 
 from torch_poisson_solver.components.factory.template_factory import TemplateFactory
 from torch_poisson_solver.components.factory.device_factory import DeviceFactory
+from torch_poisson_solver.components.factory.two_dim_field_factory import TwoDimFieldFactory
