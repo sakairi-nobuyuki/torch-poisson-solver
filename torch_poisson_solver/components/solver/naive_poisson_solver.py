@@ -28,7 +28,7 @@ class NaivePoissonSolver(SolverTemplate):
 
     def solve(self, laplacean: torch.Tensor, phi: torch.Tensor, rho: torch.Tensor) -> torch.Tensor:
 
-        self.optimizer = torch.optim.SGD([], lr=self.lr)
+        self.optimizer = torch.optim.SGD([], lr=self.lr )
         for epoch in range(self.n_epoch):
             loss = self.f_loss(torch.matmul(laplacean, phi), rho)
             loss.backward()
