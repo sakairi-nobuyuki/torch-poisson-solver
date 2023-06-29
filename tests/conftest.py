@@ -37,3 +37,32 @@ def mock_config_dict() -> Dict[str, Any]:
             },
         },
     }
+
+
+@pytest.fixture
+def mock_config_dict_custom_particle_factory() -> Dict[str, Any]:
+    return {
+        "dimension": 2,
+        "length": 10,
+        "solver": {
+            "learning_rate": 0.001,
+            "loss_type": "MSE",
+            "optimizer_type": "Adam",
+            "n_epoch": 200,
+        },
+        "particle_factory": {
+            "type": "custom",
+            "custom_particle_distribution_config": [
+                {
+                    "x": 5, "y": 5, "z": 0,
+                    "w": 3, "h": 5, "l": 0,
+                    "abs_electric_potential": -1.0,
+                }, 
+            ],
+#            "random_particle_distribution_config": {
+#                "n_particle": 20,
+#                "w": 20, "h": 200, "l": 200,
+#                "abs_electric_potential": -1.0,
+#            },
+         },
+    }

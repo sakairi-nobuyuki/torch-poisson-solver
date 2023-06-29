@@ -1,8 +1,8 @@
 # coding: utf-8
 
-from typing import Dict, Any
+from typing import Dict, Any, List
 
-from torch_poisson_solver.data_structures.config import Config
+from torch_poisson_solver.data_structures.config import Config, ParticleFactoryConfig, CustomParticleDistributionConfig
 from torch_poisson_solver.components.operators import create_instance_from_dict
 
 class TestConfig:
@@ -27,3 +27,13 @@ class TestConfig:
         assert len(config.particle_factory.custom_particle_distribution_config) == len(mock_config_dict["particle_factory"]["custom_particle_distribution_config"])
         assert config.particle_factory.custom_particle_distribution_config[0].x == mock_config_dict["particle_factory"]["custom_particle_distribution_config"][0]["x"]
         assert config.particle_factory.custom_particle_distribution_config[0].y == mock_config_dict["particle_factory"]["custom_particle_distribution_config"][0]["y"]
+
+    def test_config_load_custom_particle_factory(self, mock_config_dict_custom_particle_factory: Dict[str, Any]) -> None:
+        assert isinstance(mock_config_dict_custom_particle_factory, Dict)
+        config = create_instance_from_dict(Config, mock_config_dict_custom_particle_factory)
+        assert isinstance(config, Config)
+        assert isinstance(config.particle_factory, ParticleFactoryConfig)
+        assert config.particle_factory.custom_particle_distribution_config[0].y == mock_config_dict_custom_particle_factory["particle_factory"]["custom_particle_distribution_config"][0]["y"]
+        
+        assert isinstance(config.particle_factory.custom_particle_distribution_config, List)
+        assert config.particle_factory.length == config.length

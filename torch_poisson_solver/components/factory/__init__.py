@@ -1,5 +1,7 @@
 # coding: utf-8
 
 from torch_poisson_solver.components.factory.template_factory import TemplateFactory
+from .template_scalar_field_factory import TemplateScalarFieldTensorFactory
 from torch_poisson_solver.components.factory.device_factory import DeviceFactory
 from torch_poisson_solver.components.factory.two_dim_field_factory import TwoDimFieldFactory
+from .particle_mask_factory import ParticleMaskFactory

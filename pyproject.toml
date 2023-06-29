@@ -16,6 +16,7 @@ pytest-cov = "^4.1.0"
 tqdm = "^4.65.0"
 boto3 = "^1.26.140"
 numpy = "^1.24.3"
+opencv-python = "^4.7.0.72"
 
 
 [build-system]

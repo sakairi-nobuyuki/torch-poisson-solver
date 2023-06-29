@@ -16,8 +16,10 @@ from torch_poisson_solver.components.operators import create_instance_from_dict
         optimizer_type: str = "SDG"
         n_epoch: int = 100
     particle_factory: ParticleFaactoryConfig
+        length: int: Lenght of the area should be copied from parantal conf
         type: str: "random" or "custom"
-        custon_particle_distribution_config: List[CustomParticleDistributionConfig]: "Effective when type is 'custom'"
+        margin: int: TODO should add margin that are from calculation boundary
+        custom_particle_distribution_config: List[CustomParticleDistributionConfig]: "Effective when type is 'custom'"
             - x: int: "X-directional position"
               y: int: "Y-directional position"
               z: int: "Z-directional position"
@@ -56,18 +58,25 @@ class CustomParticleDistributionConfig:
     abs_electric_potential: float = 1.0
 
 @dataclass
-class ParticleFaactoryConfig:
+class ParticleFactoryConfig:
     type: str = "custom"
+    length: int = 0
+    margin: int = 0
     custom_particle_distribution_config: Optional[List[CustomParticleDistributionConfig]] = None
     random_particle_distribution_config: Optional[RandomParticleDistributionConfig] = None
 
     def __post_init__(self) -> None:
-        self.custom_particle_distribution_config = [
-            create_instance_from_dict(CustomParticleDistributionConfig, conf) 
-            for conf in self.custom_particle_distribution_config]
-
-        self.random_particle_distribution_config = create_instance_from_dict(
-            RandomParticleDistributionConfig, self.random_particle_distribution_config)
+        """It's a little bit technical, but in the previous initialization stage, two dicts about particle mask generation are 
+        given to custom and random particle generation config dataclass as dicts.
+        To instantializa these dataclasses, the given dicts are passed to create_instance_from_dict.
+        """
+        if self.custom_particle_distribution_config is not None:
+            self.custom_particle_distribution_config = [
+                create_instance_from_dict(CustomParticleDistributionConfig, conf) 
+                for conf in self.custom_particle_distribution_config]
+        if self.random_particle_distribution_config is not None:
+            self.random_particle_distribution_config = create_instance_from_dict(
+                RandomParticleDistributionConfig, self.random_particle_distribution_config)
         
 
 @dataclass
@@ -82,13 +91,19 @@ class Config:
     dimension: int = 2
     length: int = 1000
     solver: SolverConfig = None
-    particle_factory: ParticleFaactoryConfig = None
+    particle_factory: ParticleFactoryConfig = None
 
     def __post_init__(self):
+        
         if self.solver is not None:
             self.solver = create_instance_from_dict(SolverConfig, self.solver)
         if self.particle_factory is not None:
-            self.particle_factory = create_instance_from_dict(ParticleFaactoryConfig, self.particle_factory)            
+            
+            self.particle_factory["length"] = self.length
+            self.particle_factory = create_instance_from_dict(ParticleFactoryConfig, self.particle_factory)
+            self.particle_factory.length = self.length
+            #print(type(self.particle_factory), self.particle_factory)
+        
     
 
     
