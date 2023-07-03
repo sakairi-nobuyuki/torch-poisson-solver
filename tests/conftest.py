@@ -55,7 +55,7 @@ def mock_config_dict_custom_particle_factory() -> Dict[str, Any]:
             "custom_particle_distribution_config": [
                 {
                     "x": 5, "y": 5, "z": 0,
-                    "w": 3, "h": 5, "l": 0,
+                    "w": 6, "h": 6, "l": 0,
                     "abs_electric_potential": -1.0,
                 }, 
             ],

@@ -1,6 +1,7 @@
 # coding: utf-8
 
 import pytest
+import torch        
 from typing import Dict, Any
 import numpy as np
 
@@ -29,17 +30,48 @@ class TestParticleMaskFactoryInit:
     def test_create_single_custom_mask(self, mock_config_dict_custom_particle_factory: Dict[str, Any]) -> None:
         config =  create_instance_from_dict(Config, mock_config_dict_custom_particle_factory)
         factory = ParticleMaskFactory(config.particle_factory)
-        array = factory.create()        
+        tensor = factory.create("mask")
+        assert isinstance(tensor, torch.Tensor)
+        array = tensor.numpy()
         assert isinstance(array, np.ndarray)
-        
+
         np.testing.assert_array_almost_equal(array, np.array([[0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
             [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
+            [0., 0., 1., 1., 1., 1., 1., 1., 0., 0.],
+            [0., 0., 1., 1., 1., 1., 1., 1., 0., 0.],
+            [0., 0., 1., 1., 1., 1., 1., 1., 0., 0.],
+            [0., 0., 1., 1., 1., 1., 1., 1., 0., 0.],
+            [0., 0., 1., 1., 1., 1., 1., 1., 0., 0.],
+            [0., 0., 1., 1., 1., 1., 1., 1., 0., 0.],
             [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-            [0., 0., 0., 1., 1., 1., 1., 0., 0., 0.],
-            [0., 0., 0., 1., 1., 1., 1., 0., 0., 0.],
-            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.],
-            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]]), 1.0E-06)
+            [0., 0., 0., 0., 0., 0., 0., 0., 0., 0.]]), decimal=6)
 
+
+    def test_create_single_custom_potential(self, mock_config_dict_custom_particle_factory: Dict[str, Any]) -> None:
+        config =  create_instance_from_dict(Config, mock_config_dict_custom_particle_factory)
+        factory = ParticleMaskFactory(config.particle_factory)
+        tensor = factory.create("potential")
+        assert isinstance(tensor, torch.Tensor)
+        array = tensor.numpy()
+        assert isinstance(array, np.ndarray)
+
+        np.testing.assert_array_almost_equal(array, np.array([[ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.],
+            [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.],
+            [ 0.,  0.,  1.,  1.,  1.,  1.,  1.,  1.,  0.,  0.],
+            [ 0.,  0.,  1.,  1.,  1.,  1.,  1.,  1.,  0.,  0.],
+            [ 0.,  0., -1., -1., -1., -1., -1., -1.,  0.,  0.],
+            [ 0.,  0., -1., -1., -1., -1., -1., -1.,  0.,  0.],
+            [ 0.,  0.,  1.,  1.,  1.,  1.,  1.,  1.,  0.,  0.],
+            [ 0.,  0.,  1.,  1.,  1.,  1.,  1.,  1.,  0.,  0.],
+            [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.],
+            [ 0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.,  0.]]), decimal=6)
+
+
+    def test_create_single_custom_mask_witdth_assert(self, mock_config_dict_custom_particle_factory: Dict[str, Any]) -> None:
+        mock_config_dict_custom_particle_factory["particle_factory"]["custom_particle_distribution_config"][0]["w"] = 3
+        with pytest.raises(ValueError):
+            config =  create_instance_from_dict(Config, mock_config_dict_custom_particle_factory)
+
+    def test_validate_particle_overlapping(self):
+        # TODO: testing a particle overlapping validation
+        assert True

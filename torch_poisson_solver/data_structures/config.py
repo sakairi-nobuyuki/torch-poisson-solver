@@ -45,6 +45,10 @@ class RandomParticleDistributionConfig:
     l: int = 100
     abs_electric_potential: float = 1.0
 
+    def __post_init__(self) -> None:
+        if self.w < 4:
+            raise ValueError(f"Width must be larger than 4: {self.w}")
+
 @dataclass
 class CustomParticleDistributionConfig:
     x: int = 100
@@ -56,6 +60,9 @@ class CustomParticleDistributionConfig:
     theta: float = 0.0
     phi: float = 0.0
     abs_electric_potential: float = 1.0
+    def __post_init__(self) -> None:
+        if self.w < 4:
+            raise ValueError(f"Width must be larger than 4: {self.w}")
 
 @dataclass
 class ParticleFactoryConfig:
