@@ -23,7 +23,7 @@ class NaivePoissonSolver(SolverTemplate):
             self.lr = config.learning_rate
             self.n_epoch = config.n_epoch
             if config.loss_type == "MAE":
-                f_loss = torch.nn.L1Loss()
+                self.f_loss = torch.nn.L1Loss()
 
 
     def solve(self, laplacean: torch.Tensor, phi: torch.Tensor, rho: torch.Tensor) -> torch.Tensor:
